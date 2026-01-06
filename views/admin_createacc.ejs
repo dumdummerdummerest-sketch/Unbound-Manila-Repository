@@ -1,0 +1,96 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Create Account</title>
+    </title>
+    <link rel="stylesheet" href="/css/admin_createacc_style.css">
+    <link href='https://fonts.googleapis.com/css?family=Inter' rel='stylesheet'>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <a><img src="/logo.png" id=logo style="scale:55%; margin: auto; "></a>
+            
+                
+            <nav class="nav-menu">
+                <!-- Fixed logout reference-->
+                <a href="/logout" class="nav-btn" data-category="Logout" id="logout">Logout</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="content">
+            <div class="content-main">
+                                                                                    <!-- Render Name in the backend-->
+                <h2>Welcome, Admin <span id="supervisorName" style="font-weight:bold;"><%= admin.first_name %>  <%= admin.last_name %></span>!</h2>
+                <div class="content-bar"><h1>Create a new account</h1></div>
+                <div class="content-area">
+                    <div class="inputs-area">
+                        <div class="label-and-input">
+                            <label for="firstname">First Name</label>
+                            <input class="textbox" id="firstname">
+                        </div>
+
+                        <div class="label-and-input">
+                            <label for="middlename">Middle Name</label>
+                            <input class="textbox" id="middlename">
+                        </div>
+
+                        <div class="label-and-input">
+                            <label for="lastname">Last Name</label>
+                            <input class="textbox" id="lastname">
+                        </div>
+
+
+                        <div class="label-and-input">
+                            <label for="email">Email Address</label>
+                            <input class="textbox" id="email">
+                        </div>
+
+                        <div class="label-and-input">
+                            <label for="password">Password</label>
+                            <input class="textbox" id="password" type="password">
+                        </div>
+                        
+                        <div class="label-and-input">
+                            <label for="role">Role</label>
+                            <select id="role">
+                                <option selected>SDW</option>
+                                <option>Supervisor</option>
+                                <option>Admin</option>
+                            </select>
+                        </div>
+
+                        <div class="label-and-input" id="spuDiv">
+                            <label for="spu">SPU</label>
+                            <select id="spu">
+                                <option hidden disabled selected value></option>
+                                <option value="AMP">AMP</option>
+                                <option value="FDQ">FDQ</option>
+                                <option value="MPH">MPH</option>
+                                <option value="MS">MS</option>
+                            </select>
+                        </div>
+                    </div>
+                
+
+                    <div class="bottom-bar">
+                        <button type="button" class="cancel-btn" id="cancel" onclick="window.location.href='/admin'">Cancel</button>
+                        <button class="confirm-btn" id="confirm">Create Account</button>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        </main>
+    </div>
+
+    <script src="/js/admin_create.js"> </script>
+    
+
+</body>
+
+</html>

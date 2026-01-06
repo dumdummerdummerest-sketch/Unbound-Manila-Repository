@@ -1,0 +1,133 @@
+// Store current report data
+let currentReport = null;
+
+
+// Get DOM elements
+const modal = document.getElementById('previewModal');
+const closeModalBtn = document.getElementById('closeModal');
+const btnDownload = document.getElementById('btnDownload');
+const sortSelect = document.getElementById('sort-by');
+const reportGrid = document.querySelector('.report-grid');
+
+// Sidebar navigation - Make dynamic
+document.querySelectorAll('.nav-btn').forEach(btn => {
+    // Highlight active category
+    if (btn.dataset.category === '<%= currentCategory %>') { 
+        btn.classList.add('active');
+    }
+    // Navigate to category
+    btn.addEventListener('click', () => {
+        const category = btn.dataset.category;
+
+        //Marker - Not so sure about this
+        window.location.href = `/reports/${encodeURIComponent(category)}`;
+    });
+});
+    
+// Open modal when clicking on report card
+document.querySelectorAll('.report-card').forEach(card => {
+    card.addEventListener('click', function(e) {
+        // Don't open if clicking the options button
+        if (e.target.classList.contains('report-options-btn')) {
+            return;
+        }
+        // Might edit some of the details here
+        currentReport = {
+                id: this.dataset.reportId,
+                name: this.dataset.reportName,
+                size: this.dataset.reportSize,
+                date: this.dataset.reportDate,
+                uploader: this.dataset.reportUploader
+
+                // Change in route sql passing
+                // supervisor: this.dataset.reportSupervisor
+            };
+            openModal(currentReport);
+        });
+    });
+    
+// Open modal function
+function openModal(report) {
+    document.getElementById('modalFileName').textContent = report.name;
+    document.getElementById('uploadDate').textContent = report.date;
+    document.getElementById('fileSize').textContent = report.size;
+    document.getElementById('uploader').textContent = report.uploader;
+
+    // Change in route sql passing
+  //  document.getElementById('supervisor').textContent = report.supervisor;
+
+    const previewContainer = document.getElementById('previewContainer');
+    const fileExt = report.name.split('.').pop().toLowerCase();
+
+    // I think we need an external api to actually show the contents of the excel files like in gdrive
+    // Placeholder for now
+    // Marker: Change this
+     previewContainer.innerHTML = `
+        <div class="preview-placeholder">
+            <div></div>
+            <p>Preview not available for .${fileExt} files</p>
+            <small>Click download to view the file</small>
+        </div>
+    `;
+
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+    
+// Close modal function
+function closeModal() {
+    modal.classList.remove('active');
+    document.body.style.overflow = 'auto';
+    currentReport = null;
+
+}
+
+// Close modal events
+closeModalBtn.addEventListener('click', closeModal);
+modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+        closeModal();
+    }
+});
+// ESC key to close
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('active')) {
+        closeModal();
+    }
+});
+
+// Download button
+btnDownload.addEventListener('click', () => {
+    if (currentReport) {
+        // Marker: this needs more validation
+        const link = document.createElement('a');
+        link.href = currentReport.path || `/download/${currentReport.id}`;
+        link.download = currentReport.name;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+});
+
+
+// Sorting functionality
+sortSelect.addEventListener('change', () => {
+    const sortBy = sortSelect.value;
+    const cards = Array.from(document.querySelectorAll('.report-card'));
+    cards.sort((a, b) => {
+        switch(sortBy) {
+            case 'latest':
+                return new Date(b.dataset.reportDate) - new Date(a.dataset.reportDate);
+            case 'file-size': // Since we not have a measure of the size, we can remove this option
+                const sizeA = parseInt(a.dataset.reportSize) || 0;
+                const sizeB = parseInt(b.dataset.reportSize) || 0;
+                return sizeB - sizeA;
+            case 'alphabetical':
+                return a.dataset.reportName.localeCompare(b.dataset.reportName);
+            default:
+                return 0;
+        }
+    });
+    // Re-append sorted cards
+    cards.forEach(card => reportGrid.appendChild(card));
+});

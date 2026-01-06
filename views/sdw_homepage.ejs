@@ -1,0 +1,113 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DSWD File Manager</title>
+    </title>
+    <link href='https://fonts.googleapis.com/css?family=Inter' rel='stylesheet'>
+    <link rel="stylesheet" href="/css/sdw_homepage_style.css">
+</head>
+
+<body>
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <img src="/logo.png" style="scale:55%; margin: auto; ">
+            <nav class="nav-menu">
+                <button class="nav-btn" data-category="DSWD Annual Report">DSWD Annual Report</button>
+                <button class="nav-btn" data-category="Community Profile">Community Profile</button>
+                <button class="nav-btn" data-category="Target Vs ACC & SE">Target Vs ACC & SE</button>
+                <button class="nav-btn" data-category="Caseload Masterlist">Caseload Masterlist</button>
+                <button class="nav-btn" data-category="Education Profile">Education Profile</button>
+                <button class="nav-btn" data-category="Assistance to Families">Assistance to Families</button>
+                <button class="nav-btn" data-category="Poverty Stoplight">Poverty Stoplight</button>
+                <button class="nav-btn" data-category="CNF Candidates">CNF Candidates</button>
+                <button class="nav-btn" data-category="Retirement Candidates">Retirement Candidates</button>
+                <button class="nav-btn" data-category="VM Accomplishments">VM Accomplishments</button>
+                <button class="nav-btn" data-category="Correspondence">Correspondence</button>
+                <button class="nav-btn" data-category="Leaders Directory">Leaders Directory</button>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">
+                    <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M75 15H30C26.6863 15 24 17.6863 24 21V99C24 102.314 26.6863 105 30 105H90C93.3137 105 96 102.314 96 99V36L75 15Z" stroke="#4A9EFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M75 15V36H96" stroke="#4A9EFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M60 52.5V75" stroke="#4A9EFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M48.75 63.75H71.25" stroke="#4A9EFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <p class="upload-text">drop files here</p>
+                <input type="file" id="fileInput"  accept= ".xls, .xlsx" multiple hidden>
+            </div>
+           <!-- <button class="logout-btn" data-category="Logout" onclick="window.location.href='/login'">Logout</button>--> 
+            <a href="/logout" class="logout-btn">Logout</a>
+        </main>
+    </div>
+
+    <!-- Upload Modal -->
+    <div class="modal" id="uploadModal">
+        <div class="modal-content">
+            <p class="modal-text">You are uploading <strong id="fileName"></strong> (<span id="fileSize"></span>)</p>
+            <p class="modal-label">Upload to which report?</p>
+            <select class="modal-select" id="reportSelect">
+                <option value="DSWD Annual Report">DSWD Annual Report</option>
+                <option value="Community Profile">Community Profile</option>
+                <option value="Target Vs ACC & SE">Target Vs ACC & SE</option>
+                <option value="Caseload Masterlist">Caseload Masterlist</option>
+                <option value="Education Profile">Education Profile</option>
+                <option value="Assistance to Families">Assistance to Families</option>
+                <option value="Poverty Stoplight">Poverty Stoplight</option>
+                <option value="CNF Candidates">CNF Candidates</option>
+                <option value="Retirement Candidates">Retirement Candidates</option>
+                <option value="VM Accomplishments">VM Accomplishments</option>
+                <option value="Correspondence">Correspondence</option>
+                <option value="Leaders Directory">Leaders Directory</option>
+            </select>
+
+            <div class="modal-buttons">
+                <button class="btn-cancel" id="cancelBtn">Cancel</button>
+                <button class="btn-correct" id="correctBtn">Yes</button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal" id="successModal">
+        <div class="modal-content">
+            <p class="modal-text">Your file <strong id="successFileName"></strong> has successfully been uploaded to <strong id="successReport"></strong></p>
+            <div class="modal-buttons">
+                <button class="btn-continue" id="continueBtn">Continue</button>
+                <button class="btn-upload-another" id="uploadAnotherBtn">Upload Another File</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- File Selection Modal-->
+    <div class="modal" id="fileTypeModal">
+        <div class="modal-content">
+            <p class="modal-text">Upload a File</p>
+            <div class="file-type-buttons"> 
+                <!-- Should be just excel-->
+                    <input type="file" id="fileInputByClick" multiple>
+                    <button class="btn-file-type" id="fileTypeBtn" data-type="excel">Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    
+
+    
+
+    <script>
+        const loggedUser = <%- JSON.stringify(user) %>;
+    </script>
+    <script src="/js/sdw_upload_handler.js"></script>
+
+</body>
+
+</html>

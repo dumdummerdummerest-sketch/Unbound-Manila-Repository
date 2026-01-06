@@ -1,0 +1,77 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Edit Account</title>
+    </title>
+    <link rel="stylesheet" href="/css/admin_editacc_style.css">
+    <link href='https://fonts.googleapis.com/css?family=Inter' rel='stylesheet'>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <a><img src="/logo.png" id=logo style="scale:55%; margin: auto; "></a>
+            
+            <nav class="nav-menu">
+                <a href="/logout" class="nav-btn" data-category="Logout" id="logout">Logout</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="content">
+            <div class="content-main">
+                                                                                        <!-- Render Name in the backend-->
+                <h2>Welcome, Admin <span id="supervisorName" style="font-weight:bold;"><%= AdminName %></span>!</h2>
+                                                    <!-- Change this if incorrect-->
+                <div class="content-bar"><h1>Edit <%=sdw.firstname %> <%=sdw.lastname%>'s account</h1></div>
+                <div class="content-area">
+                    <div class="inputs-area">
+                    <form id="editSDWForm" data-staff-id="<%= staff_id %>">
+                            <div class="label-and-input">
+                                <label for="firstname">First Name</label>
+                                                                                <!-- Render values to be shown in the backend-->
+                                <input class="textbox" id="firstname" name="firstname" value="<%= sdw.firstname %>">
+                            </div>
+
+                            <div class="label-and-input">
+                                <label for="middlename">Middle Name</label>
+                                <input class="textbox" id="middlename" name="middlename" value="<%= sdw.middlename %>">
+                            </div>
+
+                            <div class="label-and-input">
+                                <label for="lastname">Last Name</label>
+                                <input class="textbox" id="lastname" name="lastname" value="<%= sdw.lastname %>">
+                            </div>
+
+
+                            <div class="label-and-input">
+                                <label for="email">Email Address</label>
+                                <input class="textbox" id="email" name="email" value="<%= sdw.email %>">
+                            </div>
+
+                            <div class="label-and-input">
+                                <label for="password">Password</label>
+                                <input class="textbox" id="password" name="password" type="password" value="<%= sdw.password %>">
+                            </div>
+                        </div>
+                        
+                        <div class="bottom-bar">
+                            <button class="cancel-btn" type="button" id="cancel">Cancel</button>
+                            <button class="confirm-btn" type="button" id="confirm">Confirm Edits</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        </main>
+    </div>
+
+ 
+    
+
+    <script src="/js/admin_edit.js"> </script>
+
+</body>
+
+</html>

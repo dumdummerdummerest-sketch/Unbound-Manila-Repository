@@ -1,0 +1,282 @@
+
+
+// Store current report data
+let currentReport = null;
+let deleteConfirmModal = null;
+// Get DOM elements
+const navbar = document.getElementById('navbar');
+const modal = document.getElementById('previewModal');
+const closeModalBtn = document.getElementById('closeModal');
+const btnDownload = document.getElementById('btnDownload');
+const btnDelete = document.getElementById('btnDelete');
+const sortSelect = document.getElementById('sort-by');
+const reportGrid = document.querySelector('.report-grid');
+
+// Sidebar navigation - Make dynamic
+document.querySelectorAll('.nav-btn').forEach(btn => {
+    // Only process buttons with data-category attribute
+    if (btn.dataset.category) {
+        if (btn.dataset.category === '<%= currentCategory %>') {
+            btn.classList.add('active');
+        }
+        // Navigate to category
+        btn.addEventListener('click', () => {
+            const category = btn.dataset.category;
+            window.location.href = `/reports/${encodeURIComponent(category)}`;
+        });
+    }
+});
+    
+// Open modal when clicking on report card
+document.querySelectorAll('.report-card').forEach(card => {
+    card.addEventListener('click', function(e) {
+        // Don't open if clicking the options button
+        if (e.target.classList.contains('report-options-btn')) {
+            return;
+        }
+        // Might edit some of the details here
+        currentReport = {
+                id: this.dataset.reportId,
+                name: this.dataset.reportName,
+                size: this.dataset.reportSize,
+                date: this.dataset.reportDate,
+                uploader: this.dataset.reportUploader
+
+                // Change in route sql passing
+                //supervisor: this.dataset.reportSupervisor
+            };
+            console.log("Current report: " + currentReport);
+            openModal(currentReport);
+        });
+    });
+async function createNew(category){
+    const newmodal = document.getElementById('appear');
+    newmodal.style.display = 'block';
+}
+
+async function closeNew(){
+    const newmodal = document.getElementById('appear');
+    newmodal.style.display = 'none';
+    //alert("New File Creation Cancelled!");
+}
+
+function renameTemplate(){
+    const newfilenametext = document.getElementById('renameSection');
+    newfilenametext.style.display = 'block';
+}
+
+async function setFileName(category){
+    try{
+
+    }catch(err){
+
+    }
+}
+
+async function createNewClose(category){
+    try{
+    const res_create = await fetch(`/reports/${category}/template`)
+
+    if (!res_create.ok) {
+    throw new Error(`HTTP error! Status: ${res_create.status}`);
+    }
+
+    console.log(res_create.statusText);
+
+    const newmodal = document.getElementById('appear');
+    newmodal.style.display = 'none';
+
+    alert("Template Created Successfully!");
+
+    window.location.reload();
+}catch(err){
+    console.log(err);
+}
+}
+
+async function downloadTemplate(category){
+    try{
+        //Create new template if choose download
+        const res_create = await fetch(`/reports/${category}/template`)
+
+        if (!res_create.ok) {
+        throw new Error(`HTTP error! Status: ${res_create.status}`);
+        }
+
+        console.log(res_create.statusText);
+        
+        //const check = await res_create.text();
+        //console.log(check);
+
+        //Download created template
+        //console.log(category);
+        const response = await fetch(`/reports/${category}/download`);
+
+        if(!response.ok){
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        
+
+        const res_delete = await fetch(`/reports/${category}/delete`);
+
+        console.log("Deleted");
+
+        if (!res_delete.ok) {
+          throw new Error(`HTTP error! Status: ${res_delete.status}`);
+        }
+        const newmodal = document.getElementById('appear');
+        newmodal.style.display = 'none';
+}catch(err){
+    console.log(err);
+}
+//`${category}.xlsx`
+}
+
+// Open modal function
+function openModal(report) {
+    document.getElementById('modalFileName').textContent = report.name;
+    document.getElementById('uploadDate').textContent = report.date;
+    document.getElementById('fileSize').textContent = (report.size / 1000).toFixed(0) + " KB"; // used KB
+    document.getElementById('uploader').textContent = report.uploader;
+    console.log("reports gotten: " + report);
+    // Change in route sql passing
+   // document.getElementById('supervisor').textContent = report.supervisor;
+
+
+    const previewContainer = document.getElementById('previewContainer');
+    const fileExt = report.name.split('.').pop().toLowerCase();
+
+    // I think we need an external api to actually show the contents of the excel files like in gdrive
+    // Placeholder for now
+    // Marker: Change this
+    /********************************************************************************************88 */
+    /********************************************************************************************88 */
+    /********************************************************************************************88 */
+     previewContainer.innerHTML = `
+        <div class="preview-placeholder">
+            <div></div>
+            <p>Preview not available for .${fileExt} files</p>
+            <small>Click download to view the file</small>
+        </div>
+    `;
+
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+    
+// Close modal function
+function closeModal() {
+    modal.classList.remove('active');
+    document.body.style.overflow = 'auto';
+    currentReport = null;
+
+}
+
+// Close modal events
+closeModalBtn.addEventListener('click', closeModal);
+modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+        closeModal();
+    }
+});
+// ESC key to close
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('active')) {
+        closeModal();
+    }
+});
+
+// Download button
+btnDownload.addEventListener('click', () => {
+    if (currentReport) {
+        // Marker: this needs more validation
+        const link = document.createElement('a');
+        link.href = currentReport.path || `/download/${currentReport.id}`;
+        link.download = currentReport.name;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+});
+
+
+// Delete button
+btnDelete.addEventListener('click', () => {
+    if (currentReport) {
+        showDeleteConfirmation();
+    }
+});
+
+// Custom delete confirmation modal
+function showDeleteConfirmation() {
+    deleteConfirmModal = document.createElement('div');
+    deleteConfirmModal.className = 'delete-modal';
+    // Create dive here for confirmation again
+    deleteConfirmModal.innerHTML = `
+        <div class="delete-modal-content">
+            <h3>Delete Report</h3>
+            <p>Are you sure you want to delete "<strong>${currentReport.name}</strong>"?</p>
+            <p class="warning-text">This action cannot be undone.</p>
+            <div class="delete-modal-buttons">
+                <button class="btn-cancel" onclick="closeDeleteConfirmation()">Cancel</button>
+                <button class="btn-confirm-delete" onclick="confirmDelete()">Delete</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(deleteConfirmModal);
+    setTimeout(() => deleteConfirmModal.classList.add('active'), 10);
+}
+
+function closeDeleteConfirmation() {
+    if (deleteConfirmModal) {
+        deleteConfirmModal.classList.remove('active');
+        setTimeout(() => {
+            document.body.removeChild(deleteConfirmModal);
+            deleteConfirmModal = null;
+        }, 300);
+    }
+}
+
+// Route to the delete router
+function confirmDelete() {
+    closeDeleteConfirmation();
+    
+    fetch(`/delete/${currentReport.id}`, {  
+        method: 'DELETE'
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Failed to delete report');
+        return response.json();
+    })
+    .then(data => {
+        alert(data.message || 'Report deleted successfully!');
+        closeModal();
+        location.reload();
+    })
+    .catch(error => {
+        console.error('Delete error:', error);
+        alert('Error deleting report: ' + error.message);
+    });
+}
+
+// Sorting functionality
+sortSelect.addEventListener('change', () => {
+    const sortBy = sortSelect.value;
+    const cards = Array.from(document.querySelectorAll('.report-card'));
+    cards.sort((a, b) => {
+        switch(sortBy) {
+            case 'latest':
+                return new Date(b.dataset.reportDate) - new Date(a.dataset.reportDate);
+            case 'file-size': // Since we not have a measure of the size, we can remove this option
+                const sizeA = parseInt(a.dataset.reportSize) || 0;
+                const sizeB = parseInt(b.dataset.reportSize) || 0;
+                return sizeB - sizeA;
+            case 'alphabetical':
+                return a.dataset.reportName.localeCompare(b.dataset.reportName);
+            default:
+                return 0;
+        }
+    });
+    // Re-append sorted cards
+    cards.forEach(card => reportGrid.appendChild(card));
+});
