@@ -8,6 +8,11 @@ const btnDelete = document.getElementById('btnDelete');
 const sortSelect = document.getElementById('sort-by');
 const reportGrid = document.querySelector('.report-grid');
 const sizeVal = document.getElementById('fileSize');
+const backBtn = document.getElementById('back-btn')
+
+backBtn.addEventListener('click', () => {
+    window.history.back();
+});
 
 
 // Sidebar navigation - Make dynamic
@@ -108,8 +113,10 @@ document.addEventListener('keydown', (e) => {
 btnDownload.addEventListener('click', () => {
     if (currentReport) {
         // Marker: this needs more validation
+        // Marker: this needs more validation
         const link = document.createElement('a');
-        link.href = currentReport.path || `/download/${currentReport.id}`;
+        console.log(currentReport.name);
+        link.href = `/download/${currentReport.id}` || currentReport.path;
         link.download = currentReport.name;
         document.body.appendChild(link);
         link.click();

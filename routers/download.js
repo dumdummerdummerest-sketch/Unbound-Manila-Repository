@@ -29,15 +29,19 @@ downloadRouter.get('/:report_id', async (req, res) => {
 
             res.setHeader("Content-Disposition", `attachment; filename="${fileName}"`);
             res.setHeader("Content-Type", response.result.content_type || "application/octet-stream");
+            
+            // Convert fileBinary to Buffer if it's not already
+            //const fileBuffer = Buffer.isBuffer(response.fileBinary) ? response.fileBinary : Buffer.from(response.fileBinary);
             res.send(response.result.fileBinary);
 
             console.log("Downloaded from Dropbox");
         } catch (err) {
-            console.error(err);
+            console.error("Dropbox download error:", err);
+            return res.status(500).send("Error downloading file from Dropbox.");
         }
     } catch(err){
-        res.status(500).send("Server error while downloading file.");
-        console.error(err);
+        console.error("Database error:", err);
+        return res.status(500).send("Server error while downloading file.");
     }
 });
 export default downloadRouter;

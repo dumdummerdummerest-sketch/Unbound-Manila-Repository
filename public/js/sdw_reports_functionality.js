@@ -45,7 +45,7 @@ document.querySelectorAll('.report-card').forEach(card => {
                 // Change in route sql passing
                 //supervisor: this.dataset.reportSupervisor
             };
-            console.log("Current report: " + currentReport);
+            //console.log("Current report: " + currentReport);
             openModal(currentReport);
         });
     });
@@ -138,7 +138,7 @@ function openModal(report) {
     document.getElementById('uploadDate').textContent = report.date;
     document.getElementById('fileSize').textContent = (report.size / 1000).toFixed(0) + " KB"; // used KB
     document.getElementById('uploader').textContent = report.uploader;
-    console.log("reports gotten: " + report);
+    //console.log("reports gotten: " + report);
     // Change in route sql passing
    // document.getElementById('supervisor').textContent = report.supervisor;
 
@@ -191,6 +191,7 @@ btnDownload.addEventListener('click', () => {
     if (currentReport) {
         // Marker: this needs more validation
         const link = document.createElement('a');
+        console.log(currentReport.path);
         link.href = currentReport.path || `/download/${currentReport.id}`;
         link.download = currentReport.name;
         document.body.appendChild(link);

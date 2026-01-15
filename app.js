@@ -65,7 +65,7 @@ app.use('/register', requireRole('admin'), registerRouter);
 app.use('/home', homeRouter);
 app.use('/reports', requireRole('sdw'), reportRouter);
 app.use('/upload', requireRole('sdw'), uploadRouter);
-app.use('/download', requireRole('sdw', 'supervisor'), downloadRouter);
+app.use('/download', requireRole('sdw', 'supervisor', 'admin'), downloadRouter);
 app.use('/', requireRole('supervisor'), supervisorSdwReportRouter);
 app.use('/delete', requireRole('sdw','supervisor', 'admin'), deleteRouter);
 app.use('/', requireRole('supervisor'), sdwRouter); // This handles /sdw/:sdw_id

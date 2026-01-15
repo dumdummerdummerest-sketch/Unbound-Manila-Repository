@@ -3,7 +3,7 @@ const ROUTE_PERMISSIONS = {
     '/home': ['admin', 'supervisor', 'sdw'],
     '/delete': ['sdw','supervisor', 'admin'],
     '/register': ['admin'],
-    '/download': ['supervisor', 'sdw'],
+    '/download': ['supervisor', 'sdw', 'admin'],
     '/upload': ['sdw'],
     '/reports': ['sdw'], // This matches your router mounting
     '/sdw': ['supervisor'], // For /sdw/:sdw_id routes
