@@ -1,5 +1,6 @@
 import express from 'express';
 import {supabase} from '../middleware/supabase_client.js';
+import bcrypt from 'bcrypt';
 
 const homeRouter = express.Router();
 
@@ -99,6 +100,72 @@ homeRouter.get('/', async (req, res) => {
         res.redirect('/login');
     }
 });
+
+
+homeRouter.post('/editcreds', async(req,res) =>{
+    try{
+    const loggedUser = req.body;
+    //console.log("Editing credentials for user:", loggedUser);
+        const {data, error} =   await supabase
+                                .from('staff_info')
+                                .select('password')
+                                .eq('staff_id', loggedUser[0].staff_info_id);
+
+        if(error) throw error;
+
+        
+        res.render('sdw_edit_credentials', {
+            user: loggedUser,
+            password: data[0].password
+        });
+    }catch(err){
+        console.error("Error rendering edit credentials page:", err);
+        return res.status(500).json({ success: false, message: "Server error" });
+    }
+});
+
+homeRouter.post('/editinfo/:sdw_id', async(req,res) =>{
+    const sdw_id = req.params.sdw_id;  
+    const {firstname, middlename, lastname, email, password} = req.body;
+    let newpassword;
+    if(password){
+        console.log("Got in...");
+        newpassword = await bcrypt.hash(password, 10);
+        const {data, error} = await supabase
+        .from('staff_info')
+        .update({password: newpassword}).eq('staff_id', sdw_id);
+    }
+    try{
+        const {data: data1, error: err1} = await supabase
+            .from('sdws')
+            .update({
+                first_name: firstname,
+                middle_name: middlename,
+                last_name: lastname,
+                email: email
+            })
+            .eq('staff_info_id', sdw_id);
+
+        if(err1) throw err1;
+
+        const {data: data2, error:err2} = await supabase
+            .from('staff_info')
+            .update({email:email}).eq('staff_id',sdw_id);
+
+        if(err2) throw err2;
+
+
+
+        
+
+        return res.json({ success: true, message: "Account info updated successfully." });
+
+    }catch(err){
+        console.error("Error updating Account info:", err);
+        return res.status(500).json({ success: false, message: "Server error" });
+    }
+
+})
 
 
 export default homeRouter;

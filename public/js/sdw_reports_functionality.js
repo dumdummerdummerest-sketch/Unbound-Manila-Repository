@@ -26,7 +26,9 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
         });
     }
 });
-    
+
+
+
 // Open modal when clicking on report card
 document.querySelectorAll('.report-card').forEach(card => {
     card.addEventListener('click', function(e) {

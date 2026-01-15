@@ -45,6 +45,106 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
     });
 });
 
+async function editProfile(){
+    try {
+        const response = await fetch('/home/editcreds', {
+            method: "POST", 
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(loggedUser)
+        });
+
+        if (response.ok) {
+            const html = await response.text();
+            document.documentElement.innerHTML = html;
+        } else {
+            alert("Failed to load edit credentials page.");
+        }
+    } catch (err) {
+        console.error("Error:", err);
+        alert("Error loading edit credentials page.");
+    }
+}
+
+async function cancel(){
+        const currentValues = {
+        firstname: document.getElementById("firstname").value,
+        middlename: document.getElementById("middlename").value,
+        lastname: document.getElementById("lastname").value,
+        email: document.getElementById("email").value,
+        password: document.getElementById("password").value,
+        //spu: document.getElementById("spu").value
+    };
+
+    const originalData = loggedUser[0];
+
+    console.log(originalData);
+
+    const hasChanges = Object.keys(originalData).
+                    some(key => originalData[key] !== currentValues[key]);
+
+    if (hasChanges) {
+        const confirmCancel = confirm("You have unsaved changes. Are you sure you want to cancel?");
+        if (!confirmCancel) return;
+    }
+        window.location.href = "/home";
+}
+
+async function submitForm(){
+    console.log(loggedUser[0]);
+    const sdw_id = loggedUser.sdw_id;
+    const updatedData = {
+        firstname: document.getElementById("firstname").value.trim(),
+        middlename: document.getElementById("middlename").value.trim(),
+        lastname: document.getElementById("lastname").value.trim(),
+        email: document.getElementById("email").value.trim(),
+        password: document.getElementById("password").value
+    }
+
+
+
+    if(!updatedData.firstname || !updatedData.lastname || !updatedData.email){
+        alert("Please fill in all required fields.");
+        return;
+    }
+
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailPattern.test(updatedData.email)) {
+        alert("Please enter a valid Gmail address.");
+        return;
+    }
+
+    // Password regex for password validation
+    const passwordPattern = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
+    if (updatedData.password && !passwordPattern.test(updatedData.password)) {
+        alert("Password must be at least 8 characters long and include at least one uppercase letter, one number, and one special character.");
+        return;
+    }
+    fetch(`/home/editinfo/${loggedUser[0].staff_info_id}`, {
+        method: "POST", 
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(updatedData)
+    })
+    .then((response) => response.json())
+    .then(data => {
+        if (data.success) {
+            alert("Account details updated successfully.");
+            //originalData = { ...updatedData };
+            // location.reload();
+            window.location.href = "/admin";
+        } else {
+            alert("Error updating admin details: " + data.message);
+        }
+    })
+    .catch(error => {
+        alert('Error updating sdw details: ' + error.message);
+    });
+
+}
+
 document.addEventListener("DOMContentLoaded", ()=>{
     const uploadArea = document.getElementById("uploadArea");
 

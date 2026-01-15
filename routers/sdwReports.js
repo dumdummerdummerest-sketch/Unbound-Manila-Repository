@@ -231,10 +231,6 @@ reportRouter.get('/:category/template', async( req, res) =>{
 
 );
 
-reportRouter.post('/tempcopy', async( req, res) =>{
-
-});
-
 // for per report categories routing
 supervisorSdwReportRouter.get('/report/:sdw_id/:category', async (req, res) => {
      try {
